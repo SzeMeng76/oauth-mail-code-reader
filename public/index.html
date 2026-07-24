@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>邮箱验证码读取工具</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f5f6f8;
+  --card: #ffffff;
+  --text: #1a1d21;
+  --muted: #6b7280;
+  --border: #e3e5e8;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --ok-bg: #ecfdf3;
+  --ok-border: #34d399;
+  --ok-text: #065f46;
+  --err-bg: #fef2f2;
+  --err-border: #f87171;
+  --err-text: #991b1b;
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --card: #171a21;
+    --text: #e5e7eb;
+    --muted: #9aa1ac;
+    --border: #2a2e37;
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --ok-bg: #052e1f;
+    --ok-border: #10b981;
+    --ok-text: #6ee7b7;
+    --err-bg: #2c1212;
+    --err-border: #ef4444;
+    --err-text: #fca5a5;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 40px 16px 80px;
+  display: flex;
+  justify-content: center;
+}
+.wrap { width: 100%; max-width: 460px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
+}
+h1 { font-size: 18px; margin: 0 0 4px; }
+.subtitle { color: var(--muted); font-size: 13px; margin: 0 0 24px; line-height: 1.5; }
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+button:hover { background: var(--accent-hover); }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+#result {
+  display: none;
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+#result.ok { background: var(--ok-bg); border: 1px solid var(--ok-border); color: var(--ok-text); }
+#result.err { background: var(--err-bg); border: 1px solid var(--err-border); color: var(--err-text); }
+.code-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.code-value {
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.copy-btn {
+  width: auto;
+  margin: 0;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  opacity: 0.8;
+}
+.copy-btn:hover { opacity: 1; background: rgb(0 0 0 / 0.05); }
+.meta { font-size: 12px; opacity: 0.85; line-height: 1.6; }
+.meta b { font-weight: 600; }
+.note {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 20px 4px 0;
+  line-height: 1.6;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>邮箱验证码读取</h1>
+    <p class="subtitle">仅用于你自己拥有的账号，凭证只与微软官方 Graph API 通信</p>
+    <form id="form">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="text" placeholder="you@hotmail.com" />
+
+      <label for="refresh_token">Refresh Token</label>
+      <input id="refresh_token" name="refresh_token" type="text" required />
+
+      <label for="client_id">Client ID</label>
+      <input id="client_id" name="client_id" type="text" required />
+
+      <label for="type">平台类型</label>
+      <select id="type" name="type">
+        <option value="all">all</option>
+        <option value="facebook">facebook</option>
+        <option value="instagram">instagram</option>
+        <option value="twitter">twitter</option>
+        <option value="apple">apple</option>
+        <option value="tiktok">tiktok</option>
+        <option value="amazon">amazon</option>
+        <option value="lazada">lazada</option>
+        <option value="kakaotalk">kakaotalk</option>
+        <option value="google">google</option>
+        <option value="shopee">shopee</option>
+        <option value="telegram">telegram</option>
+        <option value="wechat">wechat</option>
+      </select>
+
+      <button id="submitBtn" type="submit">获取验证码</button>
+    </form>
+    <div id="result"></div>
+  </div>
+  <p class="note">凭证不会被转发给任何第三方，也不会在服务端持久化。</p>
+</div>
+
+<script>
+const form = document.getElementById('form');
+const result = document.getElementById('result');
+const submitBtn = document.getElementById('submitBtn');
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+}
+
+function renderSuccess(data) {
+  result.className = 'ok';
+  result.innerHTML = `
+    <div class="code-row">
+      <span class="code-value">${escapeHtml(data.code)}</span>
+      <button type="button" class="copy-btn" id="copyBtn">复制</button>
+    </div>
+    <div class="meta">
+      <div><b>来源：</b>${escapeHtml(data.from || '-')}</div>
+      <div><b>时间：</b>${escapeHtml(data.date || '-')}</div>
+      <div><b>内容：</b>${escapeHtml(data.content || '-')}</div>
+    </div>
+  `;
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    await navigator.clipboard.writeText(data.code);
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '已复制';
+    setTimeout(() => { btn.textContent = '复制'; }, 1500);
+  });
+}
+
+function renderError(message) {
+  result.className = 'err';
+  result.textContent = message;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const payload = Object.fromEntries(new FormData(form).entries());
+  result.style.display = 'block';
+  result.className = '';
+  result.textContent = '查询中…';
+  submitBtn.disabled = true;
+  try {
+    const resp = await fetch('/api/get-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    if (data.status) {
+      renderSuccess(data);
+    } else {
+      renderError(data.error || '未找到匹配的验证码邮件');
+    }
+  } catch (err) {
+    renderError('请求失败：' + err.message);
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

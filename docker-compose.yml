@@ -1,0 +1,10 @@
+services:
+  oauth-mail-code-reader:
+    image: ghcr.io/szemeng76/oauth-mail-code-reader:main
+    # build: .  # Uncomment to build locally instead of pulling from GHCR
+    container_name: oauth-mail-code-reader
+    restart: unless-stopped
+    ports:
+      - "4173:4173"
+    environment:
+      - PORT=4173
