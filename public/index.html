@@ -141,6 +141,41 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   line-height: 1.6;
   text-align: center;
 }
+.guide {
+  margin-top: 20px;
+}
+.guide h2 {
+  font-size: 14px;
+  margin: 0 0 10px;
+  color: var(--text);
+}
+.guide ol {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.guide li { margin-bottom: 2px; }
+.guide code {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12px;
+  color: var(--text);
+}
+footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -180,6 +215,18 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
     <div id="result"></div>
   </div>
   <p class="note">凭证不会被转发给任何第三方，也不会在服务端持久化。</p>
+
+  <div class="card guide">
+    <h2>使用说明</h2>
+    <ol>
+      <li>在「Refresh Token」「Client ID」中填入你自己邮箱账号的微软 OAuth2 凭证，Email 为选填，仅用于结果展示。</li>
+      <li>「平台类型」用于按关键词匹配对应平台的验证码邮件，选择 <code>all</code> 则不限平台。</li>
+      <li>点击「获取验证码」，系统会从最近 20 封邮件中查找并提取验证码。</li>
+      <li>点击「复制」按钮即可将验证码复制到剪贴板，用于登录验证。</li>
+    </ol>
+  </div>
+
+  <footer>Powered by SMONE · <a href="https://web.sm-one.com/" target="_blank" rel="noopener noreferrer">web.sm-one.com</a></footer>
 </div>
 
 <script>
