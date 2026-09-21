@@ -359,6 +359,18 @@ select option {
   height: 20px;
   flex-shrink: 0;
   object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(236deg) brightness(104%) contrast(97%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .option-icon {
+    filter: brightness(0) saturate(100%) invert(71%) sepia(23%) saturate(1146%) hue-rotate(201deg) brightness(101%) contrast(101%);
+  }
+}
+
+.custom-select-options li:hover .option-icon,
+.custom-select-options li.active .option-icon {
+  filter: brightness(0) saturate(100%) invert(42%) sepia(93%) saturate(1352%) hue-rotate(223deg) brightness(97%) contrast(91%);
 }
 
 .option-icon.icon-emoji,
@@ -368,6 +380,25 @@ select option {
   align-items: center;
   justify-content: center;
   width: 20px;
+  filter: none;
+}
+
+.custom-select-options {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.custom-select-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-select-options::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
 }
 
 button {
