@@ -2,180 +2,449 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#2563eb" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#3b82f6" media="(prefers-color-scheme: dark)" />
 <title>邮箱验证码读取工具</title>
 <style>
 :root {
   color-scheme: light dark;
-  --bg: #f5f6f8;
+  --bg: #f8fafc;
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   --card: #ffffff;
-  --text: #1a1d21;
-  --muted: #6b7280;
-  --border: #e3e5e8;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
-  --ok-bg: #ecfdf3;
-  --ok-border: #34d399;
-  --ok-text: #065f46;
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --ok-bg: #f0fdf4;
+  --ok-border: #22c55e;
+  --ok-text: #166534;
   --err-bg: #fef2f2;
-  --err-border: #f87171;
+  --err-border: #ef4444;
   --err-text: #991b1b;
-  --radius: 14px;
+  --radius: 16px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1115;
-    --card: #171a21;
-    --text: #e5e7eb;
-    --muted: #9aa1ac;
-    --border: #2a2e37;
+    --bg: #0f172a;
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --border: #334155;
     --accent: #3b82f6;
     --accent-hover: #60a5fa;
-    --ok-bg: #052e1f;
+    --accent-gradient: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    --ok-bg: #0f2e1f;
     --ok-border: #10b981;
     --ok-text: #6ee7b7;
-    --err-bg: #2c1212;
+    --err-bg: #2d1212;
     --err-border: #ef4444;
     --err-text: #fca5a5;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
   }
 }
-* { box-sizing: border-box; }
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--bg-gradient);
   color: var(--text);
   margin: 0;
-  padding: 40px 16px 80px;
+  padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 16px) env(safe-area-inset-bottom, 80px) env(safe-area-inset-left, 16px);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-.wrap { width: 100%; max-width: 460px; }
+
+.wrap {
+  width: 100%;
+  max-width: 520px;
+  padding: 20px 0;
+}
+
 .card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 28px;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-h1 { font-size: 18px; margin: 0 0 4px; }
-.subtitle { color: var(--muted); font-size: 13px; margin: 0 0 24px; line-height: 1.5; }
+
+.card:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 32px;
+  line-height: 1.6;
+}
+
 label {
   display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  margin-top: 16px;
-  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 20px;
+  margin-bottom: 8px;
 }
+
 input, select {
   width: 100%;
-  padding: 10px 12px;
-  font-size: 14px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  min-height: 48px;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
   background: var(--bg);
   color: var(--text);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: all 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
 }
+
 input:focus, select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent);
+  transform: translateY(-1px);
 }
+
+input::placeholder {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 48px;
+  cursor: pointer;
+}
+
 button {
   width: 100%;
-  margin-top: 22px;
-  padding: 11px;
-  font-size: 14px;
-  font-weight: 600;
+  min-height: 56px;
+  margin-top: 28px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
   color: #fff;
-  background: var(--accent);
+  background: var(--accent-gradient);
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
 }
-button:hover { background: var(--accent-hover); }
-button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+button:hover::before {
+  opacity: 1;
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button:disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
 #result {
   display: none;
-  margin-top: 20px;
-  padding: 16px;
-  border-radius: 10px;
-  font-size: 13px;
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 14px;
+  font-size: 14px;
+  animation: slideIn 0.3s ease;
+  border: 2px solid;
 }
-#result.ok { background: var(--ok-bg); border: 1px solid var(--ok-border); color: var(--ok-text); }
-#result.err { background: var(--err-bg); border: 1px solid var(--err-border); color: var(--err-text); }
+
+#result.ok {
+  background: var(--ok-bg);
+  border-color: var(--ok-border);
+  color: var(--ok-text);
+}
+
+#result.err {
+  background: var(--err-bg);
+  border-color: var(--err-border);
+  color: var(--err-text);
+}
+
+#result.loading {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--muted);
+  text-align: center;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .code-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
+
 .code-value {
-  font-family: "SF Mono", Consolas, monospace;
-  font-size: 26px;
+  font-family: "SF Mono", ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+  font-size: 32px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
+  animation: checkmark 0.4s ease;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 0;
 }
+
 .copy-btn {
   width: auto;
+  min-height: 44px;
   margin: 0;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
   background: transparent;
   color: inherit;
-  border: 1px solid currentColor;
-  border-radius: 6px;
-  opacity: 0.8;
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  opacity: 0.9;
+  flex-shrink: 0;
 }
-.copy-btn:hover { opacity: 1; background: rgb(0 0 0 / 0.05); }
-.meta { font-size: 12px; opacity: 0.85; line-height: 1.6; }
-.meta b { font-weight: 600; }
+
+.copy-btn:hover {
+  opacity: 1;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  transform: translateY(-1px);
+}
+
+.copy-btn:active {
+  transform: translateY(0);
+}
+
+.meta {
+  font-size: 13px;
+  opacity: 0.9;
+  line-height: 1.8;
+}
+
+.meta div {
+  margin-bottom: 6px;
+  padding: 4px 0;
+}
+
+.meta b {
+  font-weight: 700;
+  margin-right: 8px;
+}
+
 .note {
   color: var(--muted);
-  font-size: 12px;
-  margin: 20px 4px 0;
-  line-height: 1.6;
+  font-size: 13px;
+  margin: 24px 8px 0;
+  line-height: 1.7;
   text-align: center;
+  opacity: 0.8;
 }
+
 .guide {
-  margin-top: 20px;
+  margin-top: 24px;
 }
+
 .guide h2 {
-  font-size: 14px;
-  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 16px;
   color: var(--text);
 }
+
 .guide ol {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 24px;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.9;
+  font-size: 14px;
+  line-height: 2;
 }
-.guide li { margin-bottom: 2px; }
+
+.guide li {
+  margin-bottom: 8px;
+}
+
 .guide code {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1px 5px;
-  font-size: 12px;
-  color: var(--text);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+  color: var(--accent);
+  font-weight: 600;
 }
+
 footer {
-  margin-top: 28px;
+  margin-top: 32px;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
+  opacity: 0.8;
 }
+
 footer a {
   color: var(--accent);
   text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
 }
-footer a:hover { text-decoration: underline; }
+
+footer a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: env(safe-area-inset-top, 16px) env(safe-area-inset-right, 12px) env(safe-area-inset-bottom, 60px) env(safe-area-inset-left, 12px);
+  }
+
+  .card {
+    padding: 24px 20px;
+    border-radius: 14px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .code-value {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .code-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .copy-btn {
+    width: 100%;
+  }
+}
+
+@media (hover: none) {
+  button:hover {
+    transform: none;
+  }
+
+  input:focus, select:focus {
+    transform: none;
+  }
+}
 </style>
 </head>
 <body>
@@ -254,10 +523,19 @@ function renderSuccess(data) {
     </div>
   `;
   document.getElementById('copyBtn').addEventListener('click', async () => {
-    await navigator.clipboard.writeText(data.code);
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = '已复制';
-    setTimeout(() => { btn.textContent = '复制'; }, 1500);
+    try {
+      await navigator.clipboard.writeText(data.code);
+      const btn = document.getElementById('copyBtn');
+      const originalText = btn.textContent;
+      btn.textContent = '✓ 已复制';
+      btn.style.background = 'color-mix(in srgb, currentColor 15%, transparent)';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+      }, 2000);
+    } catch (err) {
+      console.error('复制失败:', err);
+    }
   });
 }
 
@@ -266,13 +544,18 @@ function renderError(message) {
   result.textContent = message;
 }
 
+function renderLoading() {
+  result.className = 'loading';
+  result.innerHTML = '<span class="loading-spinner"></span>正在查询验证码...';
+}
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const payload = Object.fromEntries(new FormData(form).entries());
   result.style.display = 'block';
-  result.className = '';
-  result.textContent = '查询中…';
+  renderLoading();
   submitBtn.disabled = true;
+  submitBtn.textContent = '查询中...';
   try {
     const resp = await fetch('/api/get-code', {
       method: 'POST',
@@ -289,6 +572,7 @@ form.addEventListener('submit', async (e) => {
     renderError('请求失败：' + err.message);
   } finally {
     submitBtn.disabled = false;
+    submitBtn.textContent = '获取验证码';
   }
 });
 </script>
