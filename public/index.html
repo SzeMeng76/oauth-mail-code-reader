@@ -313,10 +313,7 @@ select option {
 }
 
 .custom-select-options {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
+  position: fixed;
   margin: 0;
   padding: 8px;
   list-style: none;
@@ -327,7 +324,7 @@ select option {
   backdrop-filter: blur(20px) saturate(180%);
   max-height: 320px;
   overflow-y: auto;
-  z-index: 20;
+  z-index: 1000;
   display: none;
 }
 
@@ -1067,10 +1064,39 @@ function selectTypeOption(li) {
   closeTypeSelect();
 }
 
+function positionTypeOptions() {
+  const rect = typeTrigger.getBoundingClientRect();
+  const viewportHeight = window.innerHeight;
+  const spaceBelow = viewportHeight - rect.bottom;
+  const maxHeight = Math.min(320, spaceBelow - 16);
+
+  typeOptions.style.left = rect.left + 'px';
+  typeOptions.style.width = rect.width + 'px';
+
+  if (spaceBelow < 200 && rect.top > spaceBelow) {
+    typeOptions.style.bottom = (viewportHeight - rect.top + 8) + 'px';
+    typeOptions.style.top = 'auto';
+    typeOptions.style.maxHeight = Math.min(320, rect.top - 16) + 'px';
+  } else {
+    typeOptions.style.top = (rect.bottom + 8) + 'px';
+    typeOptions.style.bottom = 'auto';
+    typeOptions.style.maxHeight = Math.max(120, maxHeight) + 'px';
+  }
+}
+
 typeTrigger.addEventListener('click', () => {
   const isOpen = typeSelect.classList.toggle('open');
   typeTrigger.setAttribute('aria-expanded', String(isOpen));
+  if (isOpen) positionTypeOptions();
 });
+
+window.addEventListener('resize', () => {
+  if (typeSelect.classList.contains('open')) positionTypeOptions();
+});
+
+window.addEventListener('scroll', () => {
+  if (typeSelect.classList.contains('open')) positionTypeOptions();
+}, true);
 
 typeOptions.querySelectorAll('li').forEach((li) => {
   li.addEventListener('click', () => selectTypeOption(li));
