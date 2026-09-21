@@ -573,17 +573,32 @@ button:disabled:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 6px;
+  padding: 12px;
   background: var(--card-glass);
   border: 1px solid var(--border);
   border-radius: 12px;
-  font-size: 22px;
   transition: all 0.2s ease;
+}
+
+.platform-chip img {
+  width: 28px;
+  height: 28px;
+  filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(236deg) brightness(104%) contrast(97%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .platform-chip img {
+    filter: brightness(0) saturate(100%) invert(71%) sepia(23%) saturate(1146%) hue-rotate(201deg) brightness(101%) contrast(101%);
+  }
 }
 
 .platform-chip:hover {
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2);
+}
+
+.platform-chip:hover img {
+  filter: brightness(0) saturate(100%) invert(42%) sepia(93%) saturate(1352%) hue-rotate(223deg) brightness(97%) contrast(91%);
 }
 
 .guide h2 {
@@ -767,14 +782,30 @@ footer a:hover::after {
     <div class="feature-card">
       <h3>支持平台</h3>
       <div class="platform-grid">
-        <div class="platform-chip" title="Facebook">📘</div>
-        <div class="platform-chip" title="Instagram">📷</div>
-        <div class="platform-chip" title="Twitter">🐦</div>
-        <div class="platform-chip" title="Apple">🍎</div>
-        <div class="platform-chip" title="TikTok">🎵</div>
-        <div class="platform-chip" title="Amazon">📦</div>
-        <div class="platform-chip" title="Google">🔍</div>
-        <div class="platform-chip" title="更多">✨</div>
+        <div class="platform-chip" title="Facebook">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/facebook.svg" alt="Facebook">
+        </div>
+        <div class="platform-chip" title="Instagram">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/instagram.svg" alt="Instagram">
+        </div>
+        <div class="platform-chip" title="Twitter/X">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/x.svg" alt="X">
+        </div>
+        <div class="platform-chip" title="Apple">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/apple.svg" alt="Apple">
+        </div>
+        <div class="platform-chip" title="TikTok">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/tiktok.svg" alt="TikTok">
+        </div>
+        <div class="platform-chip" title="Amazon">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/amazon.svg" alt="Amazon">
+        </div>
+        <div class="platform-chip" title="Google">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/google.svg" alt="Google">
+        </div>
+        <div class="platform-chip" title="Telegram">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v16/icons/telegram.svg" alt="Telegram">
+        </div>
       </div>
       <div class="stats-grid" style="margin-top: 20px;">
         <div class="stat-item">
