@@ -265,137 +265,69 @@ select option {
   font-size: 15px;
 }
 
-.custom-select {
-  position: relative;
+.type-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
-.custom-select-trigger {
-  width: 100%;
-  min-height: 52px;
-  padding: 15px 18px;
-  font-size: 16px;
-  font-weight: 600;
+.type-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 6px;
   border: 2px solid var(--border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--card-glass);
-  color: var(--text);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-align: left;
   font-family: inherit;
+  color: var(--text-light);
+  text-align: center;
 }
 
-.custom-select-trigger::after {
-  content: '';
-  margin-left: auto;
-  width: 14px;
-  height: 9px;
-  background-image: url("data:image/svg+xml,%3Csvg width='14' height='9' viewBox='0 0 14 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L7 7.5L13 1.5' stroke='%236366f1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.custom-select-trigger:focus,
-.custom-select-trigger:hover {
-  outline: none;
+.type-tile:hover {
+  transform: translateY(-2px);
   border-color: var(--accent);
-  background: var(--card);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 8px 24px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.15);
 }
 
-.custom-select.open .custom-select-trigger::after {
-  transform: rotate(180deg);
-}
-
-.custom-select-options {
-  position: fixed;
-  margin: 0;
-  padding: 8px;
-  list-style: none;
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 16px;
-  box-shadow: var(--shadow-xl);
-  backdrop-filter: blur(20px) saturate(180%);
-  max-height: 320px;
-  overflow-y: auto;
-  z-index: 1000;
-  display: none;
-}
-
-.custom-select.open .custom-select-options {
-  display: block;
-  animation: slideIn 0.2s ease;
-}
-
-.custom-select-options li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-  transition: background 0.15s ease;
-}
-
-.custom-select-options li:hover,
-.custom-select-options li.active {
+.type-tile.active {
+  border-color: var(--accent);
   background: rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  color: var(--accent);
 }
 
-.option-icon {
-  width: 20px;
-  height: 20px;
+.type-tile-icon {
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   object-fit: contain;
   filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(236deg) brightness(104%) contrast(97%);
 }
 
 @media (prefers-color-scheme: dark) {
-  .option-icon {
+  .type-tile-icon {
     filter: brightness(0) saturate(100%) invert(71%) sepia(23%) saturate(1146%) hue-rotate(201deg) brightness(101%) contrast(101%);
   }
 }
 
-.custom-select-options li:hover .option-icon,
-.custom-select-options li.active .option-icon {
-  filter: brightness(0) saturate(100%) invert(42%) sepia(93%) saturate(1352%) hue-rotate(223deg) brightness(97%) contrast(91%);
-}
-
-.option-icon.icon-emoji,
-.option-icon.icon-all {
-  font-size: 18px;
+.type-tile-icon.icon-emoji {
+  font-size: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
   filter: none;
 }
 
-.custom-select-options {
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) transparent;
-}
-
-.custom-select-options::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-select-options::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-select-options::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 3px;
+.type-tile-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 button {
@@ -838,6 +770,18 @@ footer a:hover::after {
     font-size: 24px;
   }
 
+  .type-picker {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .type-tile {
+    padding: 12px 4px;
+  }
+
+  .type-tile-label {
+    font-size: 11px;
+  }
+
   .code-value {
     font-size: 30px;
     letter-spacing: 3px;
@@ -967,54 +911,61 @@ footer a:hover::after {
         <label for="client_id">Client ID</label>
         <input id="client_id" name="client_id" type="text" required />
 
-        <label for="typeTrigger">平台类型</label>
+        <label>平台类型</label>
         <input type="hidden" id="type" name="type" value="all" />
-        <div class="custom-select" id="typeSelect">
-          <button type="button" class="custom-select-trigger" id="typeTrigger" aria-haspopup="listbox" aria-expanded="false">
-            <span class="option-icon icon-all" aria-hidden="true">🌐</span>
-            <span class="option-label">全部平台</span>
+        <div class="type-picker" id="typePicker" role="radiogroup" aria-label="平台类型">
+          <button type="button" class="type-tile active" data-value="all" data-label="全部平台" role="radio" aria-checked="true">
+            <span class="type-tile-icon icon-emoji" aria-hidden="true">🌐</span>
+            <span class="type-tile-label">全部</span>
           </button>
-          <ul class="custom-select-options" id="typeOptions" role="listbox" tabindex="-1">
-            <li role="option" data-value="all" data-label="全部平台" aria-selected="true">
-              <span class="option-icon icon-all" aria-hidden="true">🌐</span>全部平台 (all)
-            </li>
-            <li role="option" data-value="facebook" data-label="Facebook">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/facebook.svg" alt="">Facebook
-            </li>
-            <li role="option" data-value="instagram" data-label="Instagram">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/instagram.svg" alt="">Instagram
-            </li>
-            <li role="option" data-value="twitter" data-label="Twitter">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/x.svg" alt="">Twitter
-            </li>
-            <li role="option" data-value="apple" data-label="Apple">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/apple.svg" alt="">Apple
-            </li>
-            <li role="option" data-value="tiktok" data-label="TikTok">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/tiktok.svg" alt="">TikTok
-            </li>
-            <li role="option" data-value="amazon" data-label="Amazon">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/amazon.svg" alt="">Amazon
-            </li>
-            <li role="option" data-value="lazada" data-label="Lazada">
-              <span class="option-icon icon-emoji" aria-hidden="true">🛍️</span>Lazada
-            </li>
-            <li role="option" data-value="kakaotalk" data-label="KakaoTalk">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/kakaotalk.svg" alt="">KakaoTalk
-            </li>
-            <li role="option" data-value="google" data-label="Google">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/google.svg" alt="">Google
-            </li>
-            <li role="option" data-value="shopee" data-label="Shopee">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/shopee.svg" alt="">Shopee
-            </li>
-            <li role="option" data-value="telegram" data-label="Telegram">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/telegram.svg" alt="">Telegram
-            </li>
-            <li role="option" data-value="wechat" data-label="WeChat">
-              <img class="option-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/wechat.svg" alt="">WeChat
-            </li>
-          </ul>
+          <button type="button" class="type-tile" data-value="facebook" data-label="Facebook" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/facebook.svg" alt="">
+            <span class="type-tile-label">Facebook</span>
+          </button>
+          <button type="button" class="type-tile" data-value="instagram" data-label="Instagram" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/instagram.svg" alt="">
+            <span class="type-tile-label">Instagram</span>
+          </button>
+          <button type="button" class="type-tile" data-value="twitter" data-label="Twitter" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/x.svg" alt="">
+            <span class="type-tile-label">Twitter</span>
+          </button>
+          <button type="button" class="type-tile" data-value="apple" data-label="Apple" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/apple.svg" alt="">
+            <span class="type-tile-label">Apple</span>
+          </button>
+          <button type="button" class="type-tile" data-value="tiktok" data-label="TikTok" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/tiktok.svg" alt="">
+            <span class="type-tile-label">TikTok</span>
+          </button>
+          <button type="button" class="type-tile" data-value="amazon" data-label="Amazon" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/amazon.svg" alt="">
+            <span class="type-tile-label">Amazon</span>
+          </button>
+          <button type="button" class="type-tile" data-value="lazada" data-label="Lazada" role="radio" aria-checked="false">
+            <span class="type-tile-icon icon-emoji" aria-hidden="true">🛍️</span>
+            <span class="type-tile-label">Lazada</span>
+          </button>
+          <button type="button" class="type-tile" data-value="kakaotalk" data-label="KakaoTalk" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/kakaotalk.svg" alt="">
+            <span class="type-tile-label">KakaoTalk</span>
+          </button>
+          <button type="button" class="type-tile" data-value="google" data-label="Google" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/google.svg" alt="">
+            <span class="type-tile-label">Google</span>
+          </button>
+          <button type="button" class="type-tile" data-value="shopee" data-label="Shopee" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/shopee.svg" alt="">
+            <span class="type-tile-label">Shopee</span>
+          </button>
+          <button type="button" class="type-tile" data-value="telegram" data-label="Telegram" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/telegram.svg" alt="">
+            <span class="type-tile-label">Telegram</span>
+          </button>
+          <button type="button" class="type-tile" data-value="wechat" data-label="WeChat" role="radio" aria-checked="false">
+            <img class="type-tile-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/wechat.svg" alt="">
+            <span class="type-tile-label">WeChat</span>
+          </button>
         </div>
 
         <button id="submitBtn" type="submit">获取验证码</button>
@@ -1041,73 +992,18 @@ const form = document.getElementById('form');
 const result = document.getElementById('result');
 const submitBtn = document.getElementById('submitBtn');
 
-const typeSelect = document.getElementById('typeSelect');
-const typeTrigger = document.getElementById('typeTrigger');
-const typeOptions = document.getElementById('typeOptions');
+const typePicker = document.getElementById('typePicker');
 const typeHidden = document.getElementById('type');
 
-function closeTypeSelect() {
-  typeSelect.classList.remove('open');
-  typeTrigger.setAttribute('aria-expanded', 'false');
-}
-
-function selectTypeOption(li) {
-  typeHidden.value = li.dataset.value;
-  const icon = li.querySelector('.option-icon').cloneNode(true);
-  typeTrigger.innerHTML = '';
-  typeTrigger.appendChild(icon);
-  const labelSpan = document.createElement('span');
-  labelSpan.className = 'option-label';
-  labelSpan.textContent = li.dataset.label;
-  typeTrigger.appendChild(labelSpan);
-  typeOptions.querySelectorAll('li').forEach((el) => el.classList.toggle('active', el === li));
-  closeTypeSelect();
-}
-
-function positionTypeOptions() {
-  const rect = typeTrigger.getBoundingClientRect();
-  const viewportHeight = window.innerHeight;
-  const spaceBelow = viewportHeight - rect.bottom;
-  const maxHeight = Math.min(320, spaceBelow - 16);
-
-  typeOptions.style.left = rect.left + 'px';
-  typeOptions.style.width = rect.width + 'px';
-
-  if (spaceBelow < 200 && rect.top > spaceBelow) {
-    typeOptions.style.bottom = (viewportHeight - rect.top + 8) + 'px';
-    typeOptions.style.top = 'auto';
-    typeOptions.style.maxHeight = Math.min(320, rect.top - 16) + 'px';
-  } else {
-    typeOptions.style.top = (rect.bottom + 8) + 'px';
-    typeOptions.style.bottom = 'auto';
-    typeOptions.style.maxHeight = Math.max(120, maxHeight) + 'px';
-  }
-}
-
-typeTrigger.addEventListener('click', () => {
-  const isOpen = typeSelect.classList.toggle('open');
-  typeTrigger.setAttribute('aria-expanded', String(isOpen));
-  if (isOpen) positionTypeOptions();
-});
-
-window.addEventListener('resize', () => {
-  if (typeSelect.classList.contains('open')) positionTypeOptions();
-});
-
-window.addEventListener('scroll', () => {
-  if (typeSelect.classList.contains('open')) positionTypeOptions();
-}, true);
-
-typeOptions.querySelectorAll('li').forEach((li) => {
-  li.addEventListener('click', () => selectTypeOption(li));
-});
-
-document.addEventListener('click', (e) => {
-  if (!typeSelect.contains(e.target)) closeTypeSelect();
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeTypeSelect();
+typePicker.querySelectorAll('.type-tile').forEach((tile) => {
+  tile.addEventListener('click', () => {
+    typeHidden.value = tile.dataset.value;
+    typePicker.querySelectorAll('.type-tile').forEach((el) => {
+      const isActive = el === tile;
+      el.classList.toggle('active', isActive);
+      el.setAttribute('aria-checked', String(isActive));
+    });
+  });
 });
 
 function escapeHtml(str) {
