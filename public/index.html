@@ -95,10 +95,36 @@ body::before {
 
 .wrap {
   width: 100%;
-  max-width: 560px;
-  padding: 20px 0;
+  max-width: 1200px;
+  padding: 20px;
   position: relative;
   z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 968px) {
+  .wrap {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+  }
+
+  .sidebar {
+    order: 2;
+  }
+
+  .main-content {
+    order: 1;
+  }
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
 }
 
 .card {
@@ -129,9 +155,8 @@ body::before {
   box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.2), var(--shadow-colored);
 }
 
-.header {
+.feature-card:first-child {
   text-align: center;
-  margin-bottom: 36px;
 }
 
 .icon-badge {
@@ -232,6 +257,12 @@ select {
   background-position: right 18px center;
   padding-right: 50px;
   cursor: pointer;
+  font-weight: 600;
+}
+
+select option {
+  padding: 10px;
+  font-size: 15px;
 }
 
 button {
@@ -419,17 +450,140 @@ button:disabled:hover {
 }
 
 .note {
-  color: var(--text-light);
-  font-size: 14px;
-  margin: 28px 8px 0;
+  color: #fff;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  font-size: 15px;
+  margin: 0;
+  padding: 18px 24px;
   line-height: 1.7;
   text-align: center;
-  opacity: 0.8;
+  font-weight: 700;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.3px;
+}
+
+.note::before {
+  content: '🔒';
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.feature-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--shadow-xl);
+}
+
+.feature-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 20px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: var(--text-light);
+  font-size: 15px;
+  line-height: 1.7;
   font-weight: 500;
 }
 
-.guide {
-  margin-top: 28px;
+.feature-list li:last-child {
+  margin-bottom: 0;
+}
+
+.feature-list li::before {
+  content: '✓';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--accent-gradient);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 24px 16px;
+  background: var(--card-glass);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.stat-number {
+  font-size: 34px;
+  font-weight: 800;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.platform-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px;
+  background: var(--card-glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 22px;
+  transition: all 0.2s ease;
+}
+
+.platform-chip:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2);
 }
 
 .guide h2 {
@@ -477,12 +631,12 @@ button:disabled:hover {
 }
 
 footer {
-  margin-top: 40px;
   text-align: center;
   font-size: 14px;
   color: var(--text-light);
   opacity: 0.9;
   font-weight: 600;
+  padding-top: 8px;
 }
 
 footer a {
@@ -513,9 +667,18 @@ footer a:hover::after {
     padding: env(safe-area-inset-top, 16px) env(safe-area-inset-right, 12px) env(safe-area-inset-bottom, 60px) env(safe-area-inset-left, 12px);
   }
 
-  .card {
+  .card, .feature-card {
     padding: 28px 24px;
     border-radius: 20px;
+  }
+
+  .wrap {
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .sidebar {
+    gap: 16px;
   }
 
   .icon-badge {
@@ -580,8 +743,8 @@ footer a:hover::after {
 </head>
 <body>
 <div class="wrap">
-  <div class="card">
-    <div class="header">
+  <div class="sidebar">
+    <div class="feature-card">
       <div class="icon-badge">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
@@ -590,50 +753,90 @@ footer a:hover::after {
       <h1>邮箱验证码读取</h1>
       <p class="subtitle">快速安全地获取邮箱验证码 · 仅与微软官方 API 通信</p>
     </div>
-    <form id="form">
-      <label for="email">Email</label>
-      <input id="email" name="email" type="text" placeholder="you@hotmail.com" />
 
-      <label for="refresh_token">Refresh Token</label>
-      <input id="refresh_token" name="refresh_token" type="text" required />
+    <div class="feature-card">
+      <h3>核心优势</h3>
+      <ul class="feature-list">
+        <li>纯本地运行，无数据库持久化</li>
+        <li>仅与微软官方 Graph API 通信</li>
+        <li>凭证不会转发给任何第三方</li>
+        <li>支持 12+ 主流平台验证码识别</li>
+      </ul>
+    </div>
 
-      <label for="client_id">Client ID</label>
-      <input id="client_id" name="client_id" type="text" required />
+    <div class="feature-card">
+      <h3>支持平台</h3>
+      <div class="platform-grid">
+        <div class="platform-chip" title="Facebook">📘</div>
+        <div class="platform-chip" title="Instagram">📷</div>
+        <div class="platform-chip" title="Twitter">🐦</div>
+        <div class="platform-chip" title="Apple">🍎</div>
+        <div class="platform-chip" title="TikTok">🎵</div>
+        <div class="platform-chip" title="Amazon">📦</div>
+        <div class="platform-chip" title="Google">🔍</div>
+        <div class="platform-chip" title="更多">✨</div>
+      </div>
+      <div class="stats-grid" style="margin-top: 20px;">
+        <div class="stat-item">
+          <span class="stat-number">20</span>
+          <span class="stat-label">最近邮件扫描数</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">0</span>
+          <span class="stat-label">数据持久化存储</span>
+        </div>
+      </div>
+    </div>
 
-      <label for="type">平台类型</label>
-      <select id="type" name="type">
-        <option value="all">all</option>
-        <option value="facebook">facebook</option>
-        <option value="instagram">instagram</option>
-        <option value="twitter">twitter</option>
-        <option value="apple">apple</option>
-        <option value="tiktok">tiktok</option>
-        <option value="amazon">amazon</option>
-        <option value="lazada">lazada</option>
-        <option value="kakaotalk">kakaotalk</option>
-        <option value="google">google</option>
-        <option value="shopee">shopee</option>
-        <option value="telegram">telegram</option>
-        <option value="wechat">wechat</option>
-      </select>
-
-      <button id="submitBtn" type="submit">获取验证码</button>
-    </form>
-    <div id="result"></div>
-  </div>
-  <p class="note">🔒 凭证不会被转发给任何第三方，也不会在服务端持久化</p>
-
-  <div class="card guide">
-    <h2>使用说明</h2>
-    <ol>
-      <li>在「Refresh Token」「Client ID」中填入你自己邮箱账号的微软 OAuth2 凭证，Email 为选填，仅用于结果展示。</li>
-      <li>「平台类型」用于按关键词匹配对应平台的验证码邮件，选择 <code>all</code> 则不限平台。</li>
-      <li>点击「获取验证码」，系统会从最近 20 封邮件中查找并提取验证码。</li>
-      <li>点击「复制」按钮即可将验证码复制到剪贴板，用于登录验证。</li>
-    </ol>
+    <p class="note">凭证不会被转发给任何第三方，也不会在服务端持久化</p>
   </div>
 
-  <footer>Powered by SMONE · <a href="https://web.sm-one.com/" target="_blank" rel="noopener noreferrer">web.sm-one.com</a></footer>
+  <div class="main-content">
+    <div class="card">
+      <form id="form">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="text" placeholder="you@hotmail.com" />
+
+        <label for="refresh_token">Refresh Token</label>
+        <input id="refresh_token" name="refresh_token" type="text" required />
+
+        <label for="client_id">Client ID</label>
+        <input id="client_id" name="client_id" type="text" required />
+
+        <label for="type">平台类型</label>
+        <select id="type" name="type">
+          <option value="all">🌐 全部平台 (all)</option>
+          <option value="facebook">📘 Facebook</option>
+          <option value="instagram">📷 Instagram</option>
+          <option value="twitter">🐦 Twitter</option>
+          <option value="apple">🍎 Apple</option>
+          <option value="tiktok">🎵 TikTok</option>
+          <option value="amazon">📦 Amazon</option>
+          <option value="lazada">🛍️ Lazada</option>
+          <option value="kakaotalk">💬 KakaoTalk</option>
+          <option value="google">🔍 Google</option>
+          <option value="shopee">🛒 Shopee</option>
+          <option value="telegram">✈️ Telegram</option>
+          <option value="wechat">💚 WeChat</option>
+        </select>
+
+        <button id="submitBtn" type="submit">获取验证码</button>
+      </form>
+      <div id="result"></div>
+    </div>
+
+    <div class="card guide">
+      <h2>使用说明</h2>
+      <ol>
+        <li>在「Refresh Token」「Client ID」中填入你自己邮箱账号的微软 OAuth2 凭证，Email 为选填，仅用于结果展示。</li>
+        <li>「平台类型」用于按关键词匹配对应平台的验证码邮件，选择 <code>all</code> 则不限平台。</li>
+        <li>点击「获取验证码」，系统会从最近 20 封邮件中查找并提取验证码。</li>
+        <li>点击「复制」按钮即可将验证码复制到剪贴板，用于登录验证。</li>
+      </ol>
+    </div>
+
+    <footer>Powered by SMONE · <a href="https://web.sm-one.com/" target="_blank" rel="noopener noreferrer">web.sm-one.com</a></footer>
+  </div>
 </div>
 
 <script>
